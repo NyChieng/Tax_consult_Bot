@@ -1,0 +1,45 @@
+# Never include secrets in Docker image
+.env
+.env.*
+*.env
+
+# Git
+.git
+.gitignore
+
+# Development
+__pycache__
+*.pyc
+.pytest_cache
+.coverage
+htmlcov/
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large data (mount as volume instead)
+data/raw/
+data/processed/
+data/embeddings/
+
+# Documentation (not needed in production)
+*.md
+docs/
+Malaysia_Tax_Bot_Blueprint.md
+BUSINESS_STRATEGY.md
+
+# Tests (not needed in production)
+tests/
+
+# Docker files
+docker-compose*.yml
+Dockerfile
+.dockerignore

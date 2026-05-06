@@ -1,0 +1,59 @@
+# Web Scraping
+scrapy>=2.11.0
+playwright>=1.40.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+feedparser>=6.0.0
+
+# PDF Processing
+pdfplumber>=0.10.0
+pymupdf>=1.23.0
+camelot-py[cv]>=0.11.0
+pytesseract>=0.3.10
+pdf2image>=1.16.0
+
+# NLP & Language
+langdetect>=1.0.9
+deep-translator>=1.11.0
+tiktoken>=0.5.0
+
+# Vector Store & Embeddings
+chromadb>=0.4.0
+voyageai>=0.2.0
+cohere>=4.0.0
+
+# LLM
+anthropic>=0.39.0
+
+# API & Web
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+websockets>=12.0
+
+# Telegram Bot
+python-telegram-bot>=20.7
+
+# Database
+psycopg2-binary>=2.9.0
+sqlalchemy>=2.0.0
+alembic>=1.13.0
+redis>=5.0.0
+
+# Scheduling
+apscheduler>=3.10.0
+
+# Monitoring & Logging
+sentry-sdk[fastapi]>=1.38.0
+structlog>=23.2.0
+
+# Utilities
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+httpx>=0.25.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0

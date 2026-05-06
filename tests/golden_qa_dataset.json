@@ -1,0 +1,302 @@
+[
+  {
+    "question": "What is the tax rate for someone earning RM 120,000 per year?",
+    "expected_keywords": ["25%", "100,001", "400,000", "chargeable income"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "What are the tax brackets for residents in Malaysia?",
+    "expected_keywords": ["0%", "1%", "3%", "6%", "11%", "19%", "25%"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "I earn RM 50,000. What bracket am I in?",
+    "expected_keywords": ["35,001", "50,000", "6%"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "What is the non-resident tax rate?",
+    "expected_keywords": ["30%", "non-resident", "flat rate"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "What's the highest tax rate in Malaysia?",
+    "expected_keywords": ["30%", "2,000,000", "above"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "What tax rate applies to RM 300,000 income?",
+    "expected_keywords": ["25%", "100,001", "400,000"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "Is there a 0% tax bracket?",
+    "expected_keywords": ["5,000", "0%", "first"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "What tax do I pay on RM 75,000 income?",
+    "expected_keywords": ["19%", "70,001", "100,000"],
+    "expected_intent": "personal_tax_rate",
+    "category": "personal_tax"
+  },
+  {
+    "question": "Can I claim tax relief for my parents' medical bills?",
+    "expected_keywords": ["medical", "8,000", "parents", "relief"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "How much EPF can I claim for tax relief?",
+    "expected_keywords": ["EPF", "KWSP", "4,000"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "What is the lifestyle relief and how much can I claim?",
+    "expected_keywords": ["lifestyle", "2,500", "books", "computer", "sports"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "Can I claim childcare expenses?",
+    "expected_keywords": ["childcare", "3,000", "child"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "What relief is available for education fees?",
+    "expected_keywords": ["education", "7,000"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "How much is the personal relief for myself?",
+    "expected_keywords": ["9,000", "self", "individual"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "Can I claim life insurance premiums?",
+    "expected_keywords": ["life insurance", "3,000"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "What's the spouse relief amount?",
+    "expected_keywords": ["spouse", "4,000"],
+    "expected_intent": "personal_relief",
+    "category": "reliefs"
+  },
+  {
+    "question": "When is the deadline for filing BE form?",
+    "expected_keywords": ["30 April", "BE", "deadline"],
+    "expected_intent": "deadline",
+    "category": "efiling"
+  },
+  {
+    "question": "How do I file my tax return online?",
+    "expected_keywords": ["e-Filing", "mytax", "hasil.gov.my"],
+    "expected_intent": "efiling_procedure",
+    "category": "efiling"
+  },
+  {
+    "question": "What's the deadline for B form submission?",
+    "expected_keywords": ["30 June", "B form", "business income"],
+    "expected_intent": "deadline",
+    "category": "efiling"
+  },
+  {
+    "question": "What documents do I need for e-Filing?",
+    "expected_keywords": ["EA", "form", "receipt"],
+    "expected_intent": "efiling_procedure",
+    "category": "efiling"
+  },
+  {
+    "question": "Can I get an extension for tax filing?",
+    "expected_keywords": ["extension", "penalty"],
+    "expected_intent": "efiling_procedure",
+    "category": "efiling"
+  },
+  {
+    "question": "What's the SME corporate tax rate?",
+    "expected_keywords": ["17%", "600,000", "SME", "2.5"],
+    "expected_intent": "corporate_tax",
+    "category": "corporate_tax"
+  },
+  {
+    "question": "What is the standard corporate tax rate in Malaysia?",
+    "expected_keywords": ["24%"],
+    "expected_intent": "corporate_tax",
+    "category": "corporate_tax"
+  },
+  {
+    "question": "What is Pioneer Status?",
+    "expected_keywords": ["pioneer", "70%", "100%", "exemption"],
+    "expected_intent": "corporate_tax",
+    "category": "corporate_tax"
+  },
+  {
+    "question": "Can my company claim R&D deduction?",
+    "expected_keywords": ["R&D", "double deduction", "research"],
+    "expected_intent": "corporate_tax",
+    "category": "corporate_tax"
+  },
+  {
+    "question": "What qualifies as a small company for the 17% rate?",
+    "expected_keywords": ["paid-up capital", "2.5 million", "resident"],
+    "expected_intent": "corporate_tax",
+    "category": "corporate_tax"
+  },
+  {
+    "question": "How does group relief work for companies?",
+    "expected_keywords": ["group relief", "section 44A", "related companies", "losses"],
+    "expected_intent": "corporate_tax",
+    "category": "corporate_tax"
+  },
+  {
+    "question": "Do I need to register for SST?",
+    "expected_keywords": ["500,000", "threshold", "registration", "taxable turnover"],
+    "expected_intent": "sst_registration",
+    "category": "sst"
+  },
+  {
+    "question": "What's the service tax rate?",
+    "expected_keywords": ["8%", "service tax"],
+    "expected_intent": "sst_rate",
+    "category": "sst"
+  },
+  {
+    "question": "When do I need to file my SST return?",
+    "expected_keywords": ["SST-02", "bi-monthly", "30 days"],
+    "expected_intent": "sst_registration",
+    "category": "sst"
+  },
+  {
+    "question": "Is my SaaS product subject to service tax?",
+    "expected_keywords": ["digital", "service", "foreign provider"],
+    "expected_intent": "sst_rate",
+    "category": "sst"
+  },
+  {
+    "question": "What's the sales tax rate on goods?",
+    "expected_keywords": ["5%", "10%", "sales tax"],
+    "expected_intent": "sst_rate",
+    "category": "sst"
+  },
+  {
+    "question": "Is there SST on imported digital services?",
+    "expected_keywords": ["digital", "foreign", "B2C", "2020"],
+    "expected_intent": "sst_rate",
+    "category": "sst"
+  },
+  {
+    "question": "I'm selling my house after 3 years. Do I pay RPGT?",
+    "expected_keywords": ["30%", "year 3", "RPGT", "holding period"],
+    "expected_intent": "rpgt",
+    "category": "rpgt"
+  },
+  {
+    "question": "Am I exempt from RPGT on my primary home?",
+    "expected_keywords": ["once in lifetime", "exemption", "principal residence"],
+    "expected_intent": "rpgt",
+    "category": "rpgt"
+  },
+  {
+    "question": "What's the RPGT rate after 5 years for citizens?",
+    "expected_keywords": ["0%", "citizen", "after 5"],
+    "expected_intent": "rpgt",
+    "category": "rpgt"
+  },
+  {
+    "question": "How much RPGT for non-citizens selling after 4 years?",
+    "expected_keywords": ["30%", "non-citizen"],
+    "expected_intent": "rpgt",
+    "category": "rpgt"
+  },
+  {
+    "question": "What is the retention sum for RPGT?",
+    "expected_keywords": ["3%", "retention", "purchaser"],
+    "expected_intent": "rpgt",
+    "category": "rpgt"
+  },
+  {
+    "question": "We're paying royalties to a UK company. What's the withholding tax?",
+    "expected_keywords": ["10%", "royalty", "treaty", "DTA"],
+    "expected_intent": "withholding_tax",
+    "category": "withholding_tax"
+  },
+  {
+    "question": "What's the WHT rate on technical fees to non-residents?",
+    "expected_keywords": ["10%", "technical", "non-resident"],
+    "expected_intent": "withholding_tax",
+    "category": "withholding_tax"
+  },
+  {
+    "question": "Is there withholding tax on dividends paid to non-residents?",
+    "expected_keywords": ["0%", "single-tier", "dividend"],
+    "expected_intent": "withholding_tax",
+    "category": "withholding_tax"
+  },
+  {
+    "question": "When must WHT be paid to LHDN?",
+    "expected_keywords": ["1 month", "within", "payment"],
+    "expected_intent": "withholding_tax",
+    "category": "withholding_tax"
+  },
+  {
+    "question": "What form do I use for withholding tax?",
+    "expected_keywords": ["CP37"],
+    "expected_intent": "withholding_tax",
+    "category": "withholding_tax"
+  },
+  {
+    "question": "I'm a foreigner working in Malaysia for 6 months. Am I a tax resident?",
+    "expected_keywords": ["182 days", "resident", "non-resident"],
+    "expected_intent": "expatriate_tax",
+    "category": "expatriate"
+  },
+  {
+    "question": "What tax rate applies to expatriates?",
+    "expected_keywords": ["non-resident", "30%", "182"],
+    "expected_intent": "expatriate_tax",
+    "category": "expatriate"
+  },
+  {
+    "question": "Is there a special tax scheme for knowledge workers?",
+    "expected_keywords": ["knowledge worker", "Iskandar", "15%", "flat"],
+    "expected_intent": "expatriate_tax",
+    "category": "expatriate"
+  },
+  {
+    "question": "Do foreigners need to file tax in Malaysia?",
+    "expected_keywords": ["M form", "non-resident", "employment income"],
+    "expected_intent": "expatriate_tax",
+    "category": "expatriate"
+  },
+  {
+    "question": "What's the penalty for late tax filing?",
+    "expected_keywords": ["penalty", "10%", "late", "surcharge"],
+    "expected_intent": "penalty_appeal",
+    "category": "penalties"
+  },
+  {
+    "question": "Can I appeal an LHDN assessment?",
+    "expected_keywords": ["appeal", "30 days", "Form Q", "Special Commissioners"],
+    "expected_intent": "penalty_appeal",
+    "category": "penalties"
+  },
+  {
+    "question": "What happens if I don't file my tax return?",
+    "expected_keywords": ["penalty", "prosecution", "fine"],
+    "expected_intent": "penalty_appeal",
+    "category": "penalties"
+  }
+]
