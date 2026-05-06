@@ -1,4 +1,5 @@
 import json
+import asyncio
 from telegram import Update, BotCommand
 from telegram.ext import (
     Application,
@@ -7,7 +8,6 @@ from telegram.ext import (
     filters,
     ContextTypes,
 )
-import redis
 import structlog
 
 from config import settings
@@ -16,67 +16,37 @@ from bot.system_prompt import WELCOME_MESSAGE
 
 logger = structlog.get_logger()
 
-redis_client = None
-
-
-def get_redis():
-    global redis_client
-    if redis_client is None:
-        try:
-            redis_client = redis.from_url(settings.redis_url, decode_responses=True)
-            redis_client.ping()
-        except Exception:
-            redis_client = None
-    return redis_client
+# Simple in-memory session (works without Redis)
+sessions: dict[str, list[dict]] = {}
 
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(WELCOME_MESSAGE["en"])
+    await update.message.reply_text(WELCOME_MESSAGE["en"], parse_mode="Markdown")
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    help_text = """🔍 *MyCukai Assistant - Help*
+    help_text = """Just ask me anything about Malaysian tax — like texting a friend who knows this stuff.
 
-*What I can answer:*
-• Personal income tax rates & brackets
-• Tax reliefs and deductions available
-• e-Filing procedures and deadlines
-• Corporate tax for SMEs and companies
-• SST registration and filing
-• RPGT on property sales
-• Stamp duty calculations
-• Withholding tax for foreign payments
-• Expatriate tax obligations
+*Some things people ask me:*
+• "How much tax do I pay on 80k salary?"
+• "Can I claim my laptop?"
+• "When's the deadline to file?"
+• "Do I need to register for SST?"
+• "Selling my house — any tax?"
 
-*Commands:*
-/start - Welcome message
-/help - This help message
-/lang - Set language preference
+I speak English, BM, and 中文.
 
-*Tips:*
-• Ask specific questions for best results
-• I cite official LHDN sources
-• I support English, BM, and Chinese
-
-*Limitations:*
-• I cannot calculate your specific tax
-• I cannot file returns for you
-• Always verify with LHDN or a tax agent"""
+_I'm a reference tool, not a tax agent — for personal calculations or filing, see a professional ya._"""
     await update.message.reply_text(help_text, parse_mode="Markdown")
 
 
 async def lang_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = """🌐 *Language / Bahasa / 语言*
+    text = """Just type in whatever language you prefer — I'll match you automatically.
 
-I automatically detect your language.
-Just type in your preferred language:
-
-• English → I reply in English
-• Bahasa Malaysia → Saya jawab dalam BM
-• 中文 → 我会用中文回答
-
-No need to change settings!"""
-    await update.message.reply_text(text, parse_mode="Markdown")
+🇬🇧 English → I reply English
+🇲🇾 BM → Saya jawab BM
+🇨🇳 中文 → 我用中文回答"""
+    await update.message.reply_text(text)
 
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -86,60 +56,57 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not message_text:
         return
 
-    # Rate limiting
-    r = get_redis()
-    if r:
-        rate_key = f"tg_rate:{user_id}"
-        current = r.get(rate_key)
-        if current and int(current) >= settings.max_queries_per_hour:
-            await update.message.reply_text(
-                "⏳ You've reached the hourly limit (30 queries). Please try again later."
-            )
-            return
-        pipe = r.pipeline()
-        pipe.incr(rate_key)
-        pipe.expire(rate_key, 3600)
-        pipe.execute()
+    # Get conversation history (in-memory, last 6 messages)
+    history = sessions.get(user_id, [])
 
-    # Get conversation history from Redis
-    history = []
-    if r:
-        session_key = f"tg_session:{user_id}"
-        raw_history = r.lrange(session_key, 0, 9)
-        for item in reversed(raw_history):
-            try:
-                history.append(json.loads(item))
-            except json.JSONDecodeError:
-                pass
-
-    # Send typing indicator
+    # Show typing
     await update.message.chat.send_action("typing")
 
     # Process query
     result = await handle_query(
         user_message=message_text,
         conversation_history=history,
+        user_id=user_id,
     )
 
     response = result["response"]
 
-    # Telegram has a 4096 char limit
+    # Send reply (handle Telegram 4096 char limit)
     if len(response) > 4000:
-        parts = [response[i:i+4000] for i in range(0, len(response), 4000)]
+        parts = [response[i:i + 4000] for i in range(0, len(response), 4000)]
         for part in parts:
-            await update.message.reply_text(part)
+            await update.message.reply_text(part, parse_mode="Markdown")
     else:
-        await update.message.reply_text(response)
+        try:
+            await update.message.reply_text(response, parse_mode="Markdown")
+        except Exception:
+            # Markdown parse error fallback
+            await update.message.reply_text(response)
 
-    # Store in session
-    if r:
-        session_key = f"tg_session:{user_id}"
-        entry = json.dumps({"role": "user", "content": message_text})
-        r.lpush(session_key, entry)
-        assistant_entry = json.dumps({"role": "assistant", "content": response[:500]})
-        r.lpush(session_key, assistant_entry)
-        r.ltrim(session_key, 0, 19)
-        r.expire(session_key, 86400)
+    # Store in session (keep last 6 exchanges)
+    if user_id not in sessions:
+        sessions[user_id] = []
+    sessions[user_id].append({"role": "user", "content": message_text})
+    sessions[user_id].append({"role": "assistant", "content": response[:500]})
+    sessions[user_id] = sessions[user_id][-12:]  # 6 exchanges
+
+
+async def run_online_learner_background():
+    """Background task: learn from online sources every 4 hours."""
+    await asyncio.sleep(30)  # Wait 30s after startup
+    try:
+        from agent.online_learner import OnlineLearner
+        learner = OnlineLearner()
+        while True:
+            try:
+                facts = await learner.learn_cycle()
+                if facts:
+                    logger.info("learned_new_facts", count=len(facts))
+            except Exception as e:
+                logger.warning("online_learning_error", error=str(e))
+            await asyncio.sleep(4 * 3600)  # Every 4 hours
+    except Exception as e:
+        logger.warning("online_learner_init_error", error=str(e))
 
 
 def create_telegram_app() -> Application:
@@ -150,16 +117,16 @@ def create_telegram_app() -> Application:
     app.add_handler(CommandHandler("lang", lang_command))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
+    # Start online learner as background task
+    app.post_init = _post_init
+
     return app
 
 
-async def setup_commands(app: Application):
-    commands = [
-        BotCommand("start", "Start the bot"),
-        BotCommand("help", "Show help information"),
-        BotCommand("lang", "Language settings"),
-    ]
-    await app.bot.set_my_commands(commands)
+async def _post_init(application: Application):
+    """Start background tasks after bot initializes."""
+    asyncio.create_task(run_online_learner_background())
+    logger.info("background_learner_started")
 
 
 def run_telegram_bot():

@@ -3,9 +3,13 @@ from typing import Optional
 import structlog
 
 from config import settings
-from embedder.vector_store import search as vector_search
 
 logger = structlog.get_logger()
+
+try:
+    from embedder.vector_store import search as vector_search
+except ImportError:
+    vector_search = None
 
 CATEGORY_KEYWORDS = {
     "corporate_tax": ["company", "corporate", "sdn bhd", "syarikat", "C form", "pioneer"],
@@ -28,12 +32,19 @@ SOURCE_BOOST = {
 def retrieve(query: str, intent: Optional[str] = None, top_k: int = 6) -> list[dict]:
     category_filter = _detect_category_filter(query, intent)
 
-    # Semantic search
-    raw_results = vector_search(
-        query=query,
-        n_results=20,
-        tax_category_filter=category_filter,
-    )
+    # Semantic search (gracefully skip if vector store not available)
+    if vector_search is None:
+        return []
+
+    try:
+        raw_results = vector_search(
+            query=query,
+            n_results=20,
+            tax_category_filter=category_filter,
+        )
+    except Exception as e:
+        logger.warning("vector_search_unavailable", error=str(e))
+        return []
 
     # Apply source boosting
     for result in raw_results:

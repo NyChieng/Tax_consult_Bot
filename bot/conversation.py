@@ -130,9 +130,11 @@ async def handle_query(
     # 8. Extract sources from context
     sources = _extract_sources(context_chunks)
 
-    # 9. Append disclaimer
-    disclaimer = DISCLAIMER_TEXT.format(sources=", ".join(sources) if sources else "LHDN official documentation")
-    full_response = response_text + disclaimer
+    # 9. Only append disclaimer if Claude didn't already include one
+    full_response = response_text
+    if "not professional advice" not in response_text and "tax agent" not in response_text.lower()[-200:]:
+        disclaimer = DISCLAIMER_TEXT.format(sources=", ".join(sources) if sources else "LHDN official documentation")
+        full_response = response_text + disclaimer
 
     # 10. Translate response if needed
     if lang != "en":
@@ -194,24 +196,10 @@ async def _call_claude(messages: list[dict], response_lang: str) -> str:
 
 
 async def _call_bedrock(messages: list[dict], system_prompt: str) -> str:
-    """Call Claude via AWS Bedrock (supports bearer token or AWS key auth)."""
-    import os
+    """Call Claude via AWS Bedrock."""
     from anthropic import AsyncAnthropicBedrock
 
-    bearer_token = os.environ.get("AWS_BEARER_TOKEN_BEDROCK")
-
-    if bearer_token:
-        # Bearer token auth (takes priority — already set in your env)
-        client = AsyncAnthropicBedrock(
-            aws_region=settings.aws_region,
-        )
-    else:
-        # AWS IAM key auth
-        client = AsyncAnthropicBedrock(
-            aws_access_key=settings.aws_access_key_id,
-            aws_secret_key=settings.aws_secret_access_key,
-            aws_region=settings.aws_region,
-        )
+    client = AsyncAnthropicBedrock(aws_region=settings.aws_region)
 
     response = await client.messages.create(
         model=settings.bedrock_model_id,

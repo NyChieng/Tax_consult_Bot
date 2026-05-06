@@ -38,8 +38,6 @@ async def classify_intent(query: str) -> str:
         if settings.llm_provider == "bedrock":
             from anthropic import AsyncAnthropicBedrock
             client = AsyncAnthropicBedrock(
-                aws_access_key=settings.aws_access_key_id,
-                aws_secret_key=settings.aws_secret_access_key,
                 aws_region=settings.aws_region,
             )
             model = settings.bedrock_model_id_haiku
