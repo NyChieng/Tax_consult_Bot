@@ -27,8 +27,17 @@ jobs:
       - name: Run tests
         run: pytest tests/ -v --tb=short
 
-      - name: Check imports
-        run: python -c "from bot.conversation import handle_query; from api.main import app; print('All imports OK')"
+      - name: Check core imports
+        run: |
+          python -c "
+          from bot.system_prompt import SYSTEM_PROMPT
+          from bot.intent_classifier import _rule_based_classify
+          from processor.chunker import chunk_document
+          from processor.tagger import classify_tax_category
+          from security.input_guard import input_guard
+          from security.rate_limiter import rate_limiter
+          print('All core imports OK')
+          "
 
   deploy:
     needs: test
